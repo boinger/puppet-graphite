@@ -24,96 +24,98 @@ class graphite::config (
 	}
 
 	file { "/etc/httpd/conf.d/welcome.conf":
-		ensure => absent,
+		ensure  => absent,
 		require => Package["httpd"],
 	}
 
 	service { "httpd":
 			hasrestart => true,
-			hasstatus => true,
-			ensure => running,
-			enable => true,
-			require => Exec["Chown graphite for apache"];
+			hasstatus  => true,
+			ensure     => running,
+			enable     => true,
+			require    => Exec["Chown graphite for apache"];
 	}
 
 	# first init of user db for graphite
 	exec { "Initial django db creation":
-			command => "python manage.py syncdb --noinput",
-			cwd => "/opt/graphite/webapp/graphite",
+			command     => "python manage.py syncdb --noinput",
+			cwd         => "/opt/graphite/webapp/graphite",
 			refreshonly => true,
-			notify => Exec["Chown graphite for apache"],
-			#subscribe => Exec["Install $graphiteVersion"],
-			before => Exec["Chown graphite for apache"];
+			notify      => Exec["Chown graphite for apache"],
+			#subscribe  => Exec["Install $graphiteVersion"],
+			before      => Exec["Chown graphite for apache"],
+			require     => [Package['carbon'],Package['graphite-web']],
 	}
 
 	# change access permissions for apache
 	exec { "Chown graphite for apache":
-			command => "chown -R $web_user:$web_user /opt/graphite/storage/",
-			cwd => "/opt/graphite/",
+			command     => "chown -R $web_user:$web_user /opt/graphite/storage/",
+			cwd         => "/opt/graphite/",
 			refreshonly => true,
-			require => Package["graphite-web"],
+			require     => Package["graphite-web"],
 	}
 
 	# Deploy configfiles
 	file {
 		"/opt/graphite/webapp/graphite/local_settings.py":
-			mode => 644,
-			owner => "$web_user",
-			group => "$web_user",
-			content => template("graphite/opt/graphite/webapp/graphite/local_settings.py.erb");
+			mode    => 644,
+			owner   => "$web_user",
+			group   => "$web_user",
+			content => template("graphite/opt/graphite/webapp/graphite/local_settings.py.erb"),
+			require => [Package["httpd"],Exec["Initial django db creation"]];
 
 		"${apacheconf_dir}/graphite.conf":
-			mode => 644,
-			owner => "$web_user",
-			group => "$web_user",
+			mode    => 644,
+			owner   => "$web_user",
+			group   => "$web_user",
 			content => template("graphite/etc/apache2/sites-available/graphite.conf.erb"),
-			require => [Package["httpd"],Exec["Initial django db creation"]];
+			require => [Package["httpd"],Exec["Initial django db creation"]],
 	}
 
 	# configure carbon engine
 	file {
 		"/opt/graphite/conf/storage-schemas.conf":
-			mode => 644,
+			mode    => 644,
 			content => template("graphite/opt/graphite/conf/storage-schemas.conf.erb"),
 			require => Package["graphite-web"],
-			notify => Service["carbon-cache"];
+			notify  => Service["carbon-cache"];
 
 		"/opt/graphite/conf/carbon.conf":
-			mode => 644,
+			mode    => 644,
 			content => template("graphite/opt/graphite/conf/carbon.conf.erb"),
 			require => Package["graphite-web"],
-			notify => Service["carbon-cache"];
+			notify  => Service["carbon-cache"];
 	}
 
 
 	# configure logrotate script for carbon
 	file { "/opt/graphite/bin/carbon-logrotate.sh":
-			mode => 544,
+			mode    => 544,
 			content => template("graphite/opt/graphite/bin/carbon-logrotate.sh.erb"),
 			require => Package["graphite-web"];
 	}
 
 	cron { "Rotate carbon logs":
 			command => "/opt/graphite/bin/carbon-logrotate.sh",
-			user => root,
-			hour => '1',
-			minute => '15',
+			user    => root,
+			hour    => '1',
+			minute  => '15',
 			require => File["/opt/graphite/bin/carbon-logrotate.sh"];
 	}
 
 	# startup carbon engine
 	service { "carbon-cache":
-			hasstatus => true,
+			hasstatus  => true,
 			hasrestart => true,
-			ensure => running,
-			enable => true,
-			before => Anchor['graphite::config::end'],
-			require => File["/etc/init.d/carbon-cache"];
+			ensure     => running,
+			enable     => true,
+			before     => Anchor['graphite::config::end'],
+			require    => File["/etc/init.d/carbon-cache"];
 	}
 
 	file { "/etc/init.d/carbon-cache":
-			ensure => present,
-			mode => 750,
+			ensure  => present,
+			mode    => 750,
 			content => template("graphite/etc/init.d/carbon-cache.erb"),
 			require => File["/opt/graphite/conf/carbon.conf"];
 	}
