@@ -3,7 +3,7 @@
 This module installs and makes basic configs for graphite, with carbon and whisper.
 
 # Tested on
-RHEL/CentOS 6+  
+CentOS 6.3
 
 # Requirements
 
@@ -90,6 +90,6 @@ node "graphite.my.domain" {
 
 # Author
 
-written by Daniel Werdermann dwerdermann@web.de
+written by Daniel Werdermann dwerdermann@web.de<br />
 hacked on by Jeff Vier (jeff@jeffvier.com)
 
