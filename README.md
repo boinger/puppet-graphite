@@ -4,8 +4,6 @@ This module installs and makes basic configs for graphite, with carbon and whisp
 
 # Tested on
 RHEL/CentOS 6+  
-Debian 6+  
-Ubunutu 10.04 and newer
 
 # Requirements
 
@@ -93,4 +91,5 @@ node "graphite.my.domain" {
 # Author
 
 written by Daniel Werdermann dwerdermann@web.de
+hacked on by Jeff Vier (jeff@jeffvier.com)
 

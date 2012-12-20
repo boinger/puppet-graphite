@@ -1,5 +1,5 @@
 class graphite (
-	$gr_user = "",
+	$gr_user = "graphite",
 	$gr_max_cache_size = "inf",
 	$gr_max_updates_per_second = 500,
 	$gr_max_creates_per_minute = 50,
@@ -13,7 +13,7 @@ class graphite (
 	$gr_use_insecure_unpickler = "False",
 	$gr_cache_query_interface = "0.0.0.0",
 	$gr_cache_query_port = 7002,
-	$gr_timezone = 'Europe/Berlin'
+	$gr_timezone = 'GMT'
 ){
 
 	class { 'graphite::install':

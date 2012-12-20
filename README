@@ -4,8 +4,6 @@ This module installs and makes basic configs for graphite, with carbon and whisp
 
 # Tested on
 RHEL/CentOS 6+  
-Debian 6+  
-Ubunutu 10.04 and newer  
 
 # Requirements:
 
@@ -21,6 +19,20 @@ node "graphite.my.domain" {
         include graphite
 }
 
+
+### Tuned graphite installation
+
+# This carbon cache will accept TCP and UDP datas and
+# the cachesize is limited to 256mb
+node "graphite.my.domain" {
+  class {'graphite':
+    gr_max_cache_size => 256,
+    gr_enable_udp_listener => True
+  }
+}
+
+
 # Author
 
 written by Daniel Werdermann dwerdermann@web.de
+hacked on by Jeff Vier (jeff@jeffvier.com)
