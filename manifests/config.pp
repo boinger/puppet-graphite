@@ -1,5 +1,5 @@
 class graphite::config (
-	$gr_user = "graphite",
+	$gr_user = "apache",
 	$gr_max_cache_size = "inf",
 	$gr_max_updates_per_second = 500,
 	$gr_max_creates_per_minute = 50,
@@ -19,9 +19,7 @@ class graphite::config (
 	anchor { 'graphite::config::begin': }
 	anchor { 'graphite::config::end': }
 
-	Exec {
-		path => '/bin:/usr/bin:/usr/sbin',
-	}
+	Exec {path => '/bin:/usr/bin:/usr/sbin', }
 
 	file { "/etc/httpd/conf.d/welcome.conf":
 		ensure  => absent,
@@ -40,7 +38,7 @@ class graphite::config (
 	exec { "Initial django db creation":
 			command     => "python manage.py syncdb --noinput",
 			cwd         => "/opt/graphite/webapp/graphite",
-			refreshonly => true,
+			creates     => "/opt/graphite/storage/graphite.db",
 			notify      => Exec["Chown graphite for apache"],
 			#subscribe  => Exec["Install $graphiteVersion"],
 			before      => Exec["Chown graphite for apache"],
@@ -49,10 +47,10 @@ class graphite::config (
 
 	# change access permissions for apache
 	exec { "Chown graphite for apache":
-			command     => "chown -R $web_user:$web_user /opt/graphite/storage/",
-			cwd         => "/opt/graphite/",
-			refreshonly => true,
-			require     => Package["graphite-web"],
+		command     => "chown -R $web_user:$web_user /opt/graphite/storage/",
+		cwd         => "/opt/graphite/",
+		refreshonly => true,
+		require     => Package["graphite-web"],
 	}
 
 	# Deploy configfiles
@@ -64,12 +62,21 @@ class graphite::config (
 			content => template("graphite/opt/graphite/webapp/graphite/local_settings.py.erb"),
 			require => [Package["httpd"],Exec["Initial django db creation"]];
 
-		"${apacheconf_dir}/graphite.conf":
+		"/etc/httpd/conf.d/graphite.conf":
 			mode    => 644,
 			owner   => "$web_user",
 			group   => "$web_user",
 			content => template("graphite/etc/apache2/sites-available/graphite.conf.erb"),
 			require => [Package["httpd"],Exec["Initial django db creation"]],
+			notify  => [Exec["Chown graphite for apache"], Service['httpd']];
+
+		"/opt/graphite/conf/graphite.wsgi":
+			mode    => 644,
+			owner   => "$web_user",
+			group   => "$web_user",
+			content => template("graphite/opt/graphite/conf/graphite.wsgi.erb"),
+			require => [Package["httpd"],File["/etc/httpd/conf.d/graphite.conf"]],
+			notify  => [Service['httpd']];
 	}
 
 	# configure carbon engine

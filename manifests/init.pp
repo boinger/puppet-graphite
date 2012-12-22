@@ -1,5 +1,5 @@
 class graphite (
-	$gr_user = "graphite",
+	$gr_user = "apache",
 	$gr_max_cache_size = "inf",
 	$gr_max_updates_per_second = 500,
 	$gr_max_creates_per_minute = 50,

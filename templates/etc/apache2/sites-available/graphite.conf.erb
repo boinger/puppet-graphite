@@ -1,9 +1,22 @@
+<IfModule !wsgi_module.c>
+  LoadModule wsgi_module modules/mod_wsgi.so
+</IfModule>
+
+WSGISocketPrefix run/wsgi
+
 <VirtualHost *:80>
 	ServerName <%= fqdn %>
 	DocumentRoot "/opt/graphite/webapp"        
 
 	ErrorLog /opt/graphite/storage/error.log        
 	CustomLog /opt/graphite/storage/access.log common        
+
+	WSGIDaemonProcess graphite processes=5 threads=5 display-name='%{GROUP}' inactivity-timeout=120
+	WSGIProcessGroup graphite
+	WSGIApplicationGroup %{GLOBAL}
+	WSGIImportScript /opt/graphite/conf/graphite.wsgi process-group=graphite application-group=%{GLOBAL}
+
+	WSGIScriptAlias / /opt/graphite/conf/graphite.wsgi 
 
 	<Location "/">                
 		SetHandler python-program
@@ -23,6 +36,5 @@
 	<Location "/media/">
 		SetHandler None
 	</Location>
-
 	
 </VirtualHost>
