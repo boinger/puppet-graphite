@@ -18,6 +18,7 @@ class graphite::params {
 
 	$apache_service_name = "httpd"
 	$web_user            = "apache"
+	$web_gid             = $web_user
 	$graphitepkgs        = []
  
 }
