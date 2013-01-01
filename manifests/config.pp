@@ -60,7 +60,7 @@ class graphite::config (
 	file {
 		"/opt/graphite/storage/":
 			recurse => true,
-			mode    => 0664,
+			mode    => 0755,
 			owner   => "$gr_user",
 			group   => "$gr_gid",
 			require     => Package["graphite-web"];
@@ -80,6 +80,13 @@ class graphite::config (
 			require => [Package["httpd"],Exec["Initial django db creation"]],
 			#notify  => [Exec["Chown graphite for apache"], Service['httpd']];
 			notify  => [File['/opt/graphite/storage/'], Service['httpd']];
+
+		"/opt/graphite/conf":
+			recurse	=> true,
+			mode    => 644,
+			owner   => "$gr_user",
+			group   => "$gr_gid",
+			source	=> "puppet:///modules/graphite/opt/graphite/conf";
 
 		"/opt/graphite/conf/graphite.wsgi":
 			mode    => 644,
