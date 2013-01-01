@@ -1,19 +1,20 @@
 class graphite::config (
-	$gr_user = "apache",
-	$gr_max_cache_size = "inf",
-	$gr_max_updates_per_second = 500,
-	$gr_max_creates_per_minute = 50,
-	$gr_line_receiver_interface = "0.0.0.0",
-	$gr_line_receiver_port = 2003,
-	$gr_enable_udp_listener = "False",
-	$gr_udp_receiver_interface = "0.0.0.0",
-	$gr_udp_receiver_port = 2003,
+	$gr_user                      = "graphite",
+	$gr_gid                       = "carbon",
+	$gr_max_cache_size            = "inf",
+	$gr_max_updates_per_second    = 500,
+	$gr_max_creates_per_minute    = 50,
+	$gr_line_receiver_interface   = "0.0.0.0",
+	$gr_line_receiver_port        = 2003,
+	$gr_enable_udp_listener       = "False",
+	$gr_udp_receiver_interface    = "0.0.0.0",
+	$gr_udp_receiver_port         = 2003,
 	$gr_pickle_receiver_interface = "0.0.0.0",
-	$gr_pickle_receiver_port = 2004,
-	$gr_use_insecure_unpickler = "False",
-	$gr_cache_query_interface = "0.0.0.0",
-	$gr_cache_query_port = 7002,
-	$gr_timezone = 'GMT',
+	$gr_pickle_receiver_port      = 2004,
+	$gr_use_insecure_unpickler    = "False",
+	$gr_cache_query_interface     = "0.0.0.0",
+	$gr_cache_query_port          = 7002,
+	$gr_timezone                  = 'GMT',
 ) inherits graphite::params {
 
 	anchor { 'graphite::config::begin': }
@@ -31,56 +32,64 @@ class graphite::config (
 			hasstatus  => true,
 			ensure     => running,
 			enable     => true,
-			require    => Exec["Chown graphite for apache"];
+			#require    => Exec["Chown graphite for apache"];
+			require    => File['/opt/graphite/storage/'];
 	}
 
 	# first init of user db for graphite
-	exec { "Initial django db creation":
+	exec {
+		"Initial django db creation":
 			command     => "python manage.py syncdb --noinput",
 			cwd         => "/opt/graphite/webapp/graphite",
 			creates     => "/opt/graphite/storage/graphite.db",
-			notify      => Exec["Chown graphite for apache"],
+			#notify      => Exec["Chown graphite for apache"],
 			#subscribe  => Exec["Install $graphiteVersion"],
-			before      => Exec["Chown graphite for apache"],
-			require     => [Package['carbon'],Package['graphite-web']],
-	}
+			#before      => Exec["Chown graphite for apache"],
+			before      => File['/opt/graphite/storage/'],
+			require     => [Package['carbon'],Package['graphite-web']];
 
 	# change access permissions for apache
-	exec { "Chown graphite for apache":
-		command     => "chown -R $web_user:$web_user /opt/graphite/storage/",
-		cwd         => "/opt/graphite/",
-		refreshonly => true,
-		require     => Package["graphite-web"],
+#		"Chown graphite for apache":
+#			command     => "chown -R $web_user:$web_user /opt/graphite/storage/",
+#			cwd         => "/opt/graphite/",
+#			refreshonly => true,
+#			require     => Package["graphite-web"],
 	}
 
 	# Deploy configfiles
 	file {
+		"/opt/graphite/storage/":
+			recurse => true,
+			mode    => 0664,
+			owner   => "$gr_user",
+			group   => "$gr_gid",
+			require     => Package["graphite-web"];
+
 		"/opt/graphite/webapp/graphite/local_settings.py":
 			mode    => 644,
-			owner   => "$web_user",
-			group   => "$web_user",
+			owner   => "$gr_user",
+			group   => "$gr_gid",
 			content => template("graphite/opt/graphite/webapp/graphite/local_settings.py.erb"),
 			require => [Package["httpd"],Exec["Initial django db creation"]];
 
 		"/etc/httpd/conf.d/graphite.conf":
 			mode    => 644,
 			owner   => "$web_user",
-			group   => "$web_user",
+			group   => "$web_gid",
 			content => template("graphite/etc/apache2/sites-available/graphite.conf.erb"),
 			require => [Package["httpd"],Exec["Initial django db creation"]],
-			notify  => [Exec["Chown graphite for apache"], Service['httpd']];
+			#notify  => [Exec["Chown graphite for apache"], Service['httpd']];
+			notify  => [File['/opt/graphite/storage/'], Service['httpd']];
 
 		"/opt/graphite/conf/graphite.wsgi":
 			mode    => 644,
-			owner   => "$web_user",
-			group   => "$web_user",
+			owner   => "$gr_user",
+			group   => "$gr_gid",
 			content => template("graphite/opt/graphite/conf/graphite.wsgi.erb"),
 			require => [Package["httpd"],File["/etc/httpd/conf.d/graphite.conf"]],
 			notify  => [Service['httpd']];
-	}
 
 	# configure carbon engine
-	file {
 		"/opt/graphite/conf/storage-schemas.conf":
 			mode    => 644,
 			content => template("graphite/opt/graphite/conf/storage-schemas.conf.erb"),
@@ -92,11 +101,9 @@ class graphite::config (
 			content => template("graphite/opt/graphite/conf/carbon.conf.erb"),
 			require => Package["graphite-web"],
 			notify  => Service["carbon-cache"];
-	}
-
 
 	# configure logrotate script for carbon
-	file { "/opt/graphite/bin/carbon-logrotate.sh":
+		"/opt/graphite/bin/carbon-logrotate.sh":
 			mode    => 544,
 			content => template("graphite/opt/graphite/bin/carbon-logrotate.sh.erb"),
 			require => Package["graphite-web"];
