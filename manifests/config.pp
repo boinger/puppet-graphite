@@ -60,7 +60,7 @@ class graphite::config (
 	file {
 		"/opt/graphite/storage/":
 			recurse => true,
-			mode    => 0755,
+			mode    => 0664,
 			owner   => "$gr_user",
 			group   => "$gr_gid",
 			require     => Package["graphite-web"];
