@@ -86,7 +86,8 @@ class graphite::config (
 			mode    => 644,
 			owner   => "$gr_user",
 			group   => "$gr_gid",
-			source	=> "puppet:///modules/graphite/opt/graphite/conf";
+			source	=> "puppet:///modules/graphite/opt/graphite/conf",
+			require => File['/opt/graphite/storage/'];
 
 		"/opt/graphite/conf/graphite.wsgi":
 			mode    => 644,
