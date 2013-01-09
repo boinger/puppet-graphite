@@ -59,7 +59,7 @@ class graphite::config (
   # Deploy configfiles
   file {
     "/opt/graphite/storage/":
-      recurse => true,
+      #recurse => true,
       mode    => 0664,
       owner   => "$gr_user",
       group   => "$gr_gid",
