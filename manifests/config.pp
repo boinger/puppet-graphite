@@ -61,7 +61,7 @@ class graphite::config (
     "/data/graphite":
       mode    => 0755,
       owner   => "$gr_user",
-      group   => "$gr_gid";
+      group   => "$gr_gid",
       require => File['/data'];
 
     "/data/graphite/storage":
@@ -70,6 +70,11 @@ class graphite::config (
       owner   => "$gr_user",
       group   => "$gr_gid",
       require => Package["graphite-web"];
+
+    "/opt/graphite":
+      mode    => 0755,
+      owner   => "$gr_user",
+      group   => "$gr_gid";
 
     "/opt/graphite/webapp/graphite/local_settings.py":
       mode    => 644,
