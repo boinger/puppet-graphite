@@ -58,12 +58,18 @@ class graphite::config (
 
   # Deploy configfiles
   file {
-    "/data/graphite/storage/":
+    "/data/graphite":
+      mode    => 0755,
+      owner   => "$gr_user",
+      group   => "$gr_gid";
+      require => File['/data'];
+
+    "/data/graphite/storage":
       #recurse => true,
-      mode    => 0664,
+      mode    => 0775,
       owner   => "$gr_user",
       group   => "$gr_gid",
-      require     => Package["graphite-web"];
+      require => Package["graphite-web"];
 
     "/opt/graphite/webapp/graphite/local_settings.py":
       mode    => 644,
@@ -79,7 +85,7 @@ class graphite::config (
       content => template("graphite/etc/apache2/sites-available/graphite.conf.erb"),
       require => [Package["httpd"],Exec["Initial django db creation"]],
       #notify  => [Exec["Chown graphite for apache"], Service['httpd']];
-      notify  => [File['/data/graphite/storage/'], Service['httpd']];
+      notify  => [File['/data/graphite/storage'], Service['httpd']];
 
     "/opt/graphite/conf":
       recurse => true,
