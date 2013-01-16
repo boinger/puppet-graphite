@@ -33,7 +33,7 @@ class graphite::config (
       ensure     => running,
       enable     => true,
       #require    => Exec["Chown graphite for apache"];
-      require    => File['/opt/graphite/storage/'];
+      require    => File['/data/graphite/storage/'];
   }
 
   # first init of user db for graphite
@@ -41,11 +41,11 @@ class graphite::config (
     "Initial django db creation":
       command     => "python manage.py syncdb --noinput",
       cwd         => "/opt/graphite/webapp/graphite",
-      creates     => "/opt/graphite/storage/graphite.db",
+      creates     => "/data/graphite/storage/graphite.db",
       #notify      => Exec["Chown graphite for apache"],
       #subscribe  => Exec["Install $graphiteVersion"],
       #before      => Exec["Chown graphite for apache"],
-      before      => File['/opt/graphite/storage/'],
+      before      => File['/data/graphite/storage/'],
       require     => [Package['carbon'],Package['graphite-web']];
 
   # change access permissions for apache
@@ -58,7 +58,7 @@ class graphite::config (
 
   # Deploy configfiles
   file {
-    "/opt/graphite/storage/":
+    "/data/graphite/storage/":
       #recurse => true,
       mode    => 0664,
       owner   => "$gr_user",
@@ -79,15 +79,14 @@ class graphite::config (
       content => template("graphite/etc/apache2/sites-available/graphite.conf.erb"),
       require => [Package["httpd"],Exec["Initial django db creation"]],
       #notify  => [Exec["Chown graphite for apache"], Service['httpd']];
-      notify  => [File['/opt/graphite/storage/'], Service['httpd']];
+      notify  => [File['/data/graphite/storage/'], Service['httpd']];
 
     "/opt/graphite/conf":
       recurse => true,
       mode    => 644,
       owner   => "$gr_user",
       group   => "$gr_gid",
-      source  => "puppet:///modules/graphite/opt/graphite/conf",
-      require => File['/opt/graphite/storage/'];
+      source  => "puppet:///modules/graphite/opt/graphite/conf";
 
     "/opt/graphite/conf/graphite.wsgi":
       mode    => 644,

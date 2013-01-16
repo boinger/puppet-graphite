@@ -3,7 +3,7 @@
 # Because graphite has now way to configure the logrotation,
 # we do that with a cronjab and this script.
 
-CARBON_LOGS=/opt/graphite/storage/log/carbon-cache/
+CARBON_LOGS=/data/log/graphite/storage/carbon-cache/
 
 # gzip log files older than 1 days
 find $CARBON_LOGS -type f -mtime +1 -exec gzip -q "{}" \;
