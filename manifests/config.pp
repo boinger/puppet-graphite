@@ -45,7 +45,7 @@ class graphite::config (
       #notify      => Exec["Chown graphite for apache"],
       #subscribe  => Exec["Install $graphiteVersion"],
       #before      => Exec["Chown graphite for apache"],
-      before      => File['/data/graphite/storage/'],
+      before      => File['/data/graphite/storage'],
       require     => [Package['carbon'],Package['graphite-web']];
 
   # change access permissions for apache
@@ -59,12 +59,14 @@ class graphite::config (
   # Deploy configfiles
   file {
     "/data/graphite":
+      ensure  => directory,
       mode    => 0755,
       owner   => "$gr_user",
       group   => "$gr_gid",
       require => File['/data'];
 
     "/data/graphite/storage":
+      ensure  => directory,
       #recurse => true,
       mode    => 0775,
       owner   => "$gr_user",
@@ -72,9 +74,17 @@ class graphite::config (
       require => Package["graphite-web"];
 
     "/opt/graphite":
+      ensure  => directory,
       mode    => 0755,
       owner   => "$gr_user",
       group   => "$gr_gid";
+
+    "/opt/graphite/storage":
+      ensure  => '/data/graphite/storage',
+      require => [
+          File['/opt/graphite'],
+          File['/data/graphite/storage'],
+        ];
 
     "/opt/graphite/webapp/graphite/local_settings.py":
       mode    => 644,
