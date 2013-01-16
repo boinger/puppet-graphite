@@ -42,18 +42,9 @@ class graphite::config (
       command     => "python manage.py syncdb --noinput",
       cwd         => "/opt/graphite/webapp/graphite",
       creates     => "/data/graphite/storage/graphite.db",
-      #notify      => Exec["Chown graphite for apache"],
-      #subscribe  => Exec["Install $graphiteVersion"],
-      #before      => Exec["Chown graphite for apache"],
-      before      => File['/data/graphite/storage'],
+      #before      => File['/data/graphite/storage'],
       require     => [Package['carbon'],Package['graphite-web']];
-
-  # change access permissions for apache
-#   "Chown graphite for apache":
-#     command     => "chown -R $web_user:$web_user /opt/graphite/storage/",
-#     cwd         => "/opt/graphite/",
-#     refreshonly => true,
-#     require     => Package["graphite-web"],
+      #require     => [File['/data/graphite/storage']];
   }
 
   # Deploy configfiles
@@ -71,7 +62,7 @@ class graphite::config (
       mode    => 0775,
       owner   => "$gr_user",
       group   => "$gr_gid",
-      require => Package["graphite-web"];
+      require => File['/data/graphite'];
 
     "/opt/graphite":
       ensure  => directory,
@@ -100,7 +91,7 @@ class graphite::config (
       content => template("graphite/etc/apache2/sites-available/graphite.conf.erb"),
       require => [Package["httpd"],Exec["Initial django db creation"]],
       #notify  => [Exec["Chown graphite for apache"], Service['httpd']];
-      notify  => [File['/data/graphite/storage'], Service['httpd']];
+      notify  => Service['httpd'];
 
     "/opt/graphite/conf":
       recurse => true,
