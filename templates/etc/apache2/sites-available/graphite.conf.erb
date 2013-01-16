@@ -8,8 +8,8 @@ WSGISocketPrefix run/wsgi
 	ServerName <%= fqdn %>
 	DocumentRoot "/opt/graphite/webapp"        
 
-	ErrorLog /data/log/graphite/storage/error.log        
-	CustomLog /data/log/graphite/storage/access.log common        
+	ErrorLog /data/log/graphite/error.log        
+	CustomLog /data/log/graphite/access.log common        
 
 	WSGIDaemonProcess graphite processes=5 threads=5 display-name='%{GROUP}' inactivity-timeout=120
 	WSGIProcessGroup graphite
