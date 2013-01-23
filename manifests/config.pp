@@ -58,11 +58,17 @@ class graphite::config (
 
     "/data/graphite/storage":
       ensure  => directory,
+      #recurse => true,
+      mode    => 0755,
+      owner   => "$gr_user",
+      group   => "$gr_gid";
+
+    "/data/graphite/storage/log":
+      ensure  => directory,
       recurse => true,
       mode    => 0775,
       owner   => "$gr_user",
-      group   => "$gr_gid",
-      require => File['/data/graphite'];
+      group   => "$gr_gid";
 
     "/opt/graphite":
       ensure  => directory,
