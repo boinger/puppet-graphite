@@ -4,9 +4,8 @@ class graphite::install::redhat {
 
 	require graphite::params
 
-	Exec {
-		path => '/bin:/usr/bin:/usr/sbin',
-	}
+	Exec {path => '/bin:/usr/bin:/usr/sbin', }
+	Package  { ensure => "installed", }
 
 	# for full functionality we need this packages:
 	# madatory: python-cairo, python-django, python-twisted, python-django-tagging, python-simplejson
@@ -17,7 +16,6 @@ class graphite::install::redhat {
 
 	package {
 		$graphitepkgs:
-			ensure => installed,
 			require => Anchor["graphitepkg::begin"],
 			before => Anchor["graphitepkg::end"]
 	}
@@ -26,7 +24,6 @@ class graphite::install::redhat {
 
 	package {
 		"python-setuptools":
-			ensure => installed,
 			require => Anchor["graphitepkg::begin"],
 			before => Anchor["graphitepkg::end"]
 	}
