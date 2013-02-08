@@ -32,7 +32,6 @@ class graphite::config (
       hasstatus  => true,
       ensure     => running,
       enable     => true,
-      #require    => Exec["Chown graphite for apache"];
       require    => File['/data/graphite/storage/'];
   }
 
@@ -42,9 +41,7 @@ class graphite::config (
       command     => "python manage.py syncdb --noinput",
       cwd         => "/opt/graphite/webapp/graphite",
       creates     => "/data/graphite/storage/graphite.db",
-      #before      => File['/data/graphite/storage'],
       require     => [Package['carbon'],Package['graphite-web']];
-      #require     => [File['/data/graphite/storage']];
   }
 
   # Deploy configfiles
@@ -127,6 +124,12 @@ class graphite::config (
       require => Package["graphite-web"],
       notify  => Service["carbon-cache"];
 
+    "/etc/init.d/carbon-cache":
+      ensure  => present,
+      mode    => 750,
+      content => template("graphite/etc/init.d/carbon-cache.erb"),
+      require => File["/opt/graphite/conf/carbon.conf"];
+
   # configure logrotate script for carbon
     "/opt/graphite/bin/carbon-logrotate.sh":
       mode    => 544,
@@ -142,7 +145,6 @@ class graphite::config (
       require => File["/opt/graphite/bin/carbon-logrotate.sh"];
   }
 
-  # startup carbon engine
   service { "carbon-cache":
       hasstatus  => true,
       hasrestart => true,
@@ -150,12 +152,5 @@ class graphite::config (
       enable     => true,
       before     => Anchor['graphite::config::end'],
       require    => File["/etc/init.d/carbon-cache"];
-  }
-
-  file { "/etc/init.d/carbon-cache":
-      ensure  => present,
-      mode    => 750,
-      content => template("graphite/etc/init.d/carbon-cache.erb"),
-      require => File["/opt/graphite/conf/carbon.conf"];
   }
 }
