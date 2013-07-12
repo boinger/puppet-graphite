@@ -38,10 +38,10 @@ class graphite::config (
   # first init of user db for graphite
   exec {
     "Initial django db creation":
-      command     => "python manage.py syncdb --noinput",
-      cwd         => "/opt/graphite/webapp/graphite",
-      creates     => "/data/graphite/storage/graphite.db",
-      require     => [Package['carbon'],Package['graphite-web']];
+      command => "python manage.py syncdb --noinput",
+      cwd     => "/opt/graphite/webapp/graphite",
+      creates => "/data/graphite/storage/graphite.db",
+      require => [Package['carbon'],Package['graphite-web']];
   }
 
   # Deploy configfiles
@@ -54,11 +54,10 @@ class graphite::config (
       require => File['/data'];
 
     "/data/graphite/storage":
-      ensure  => directory,
-      #recurse => true,
-      mode    => 0755,
-      owner   => "$gr_user",
-      group   => "$gr_gid";
+      ensure => directory,
+      mode   => 0755,
+      owner  => "$gr_user",
+      group  => "$gr_gid";
 
     "/data/graphite/storage/log":
       ensure  => directory,
@@ -68,10 +67,10 @@ class graphite::config (
       group   => "$gr_gid";
 
     "/opt/graphite":
-      ensure  => directory,
-      mode    => 0755,
-      owner   => "$gr_user",
-      group   => "$gr_gid";
+      ensure => directory,
+      mode   => 0755,
+      owner  => "$gr_user",
+      group  => "$gr_gid";
 
     "/opt/graphite/storage":
       ensure  => '/data/graphite/storage',
