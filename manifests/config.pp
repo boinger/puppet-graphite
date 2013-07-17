@@ -15,6 +15,7 @@ class graphite::config (
   $gr_cache_query_interface     = "0.0.0.0",
   $gr_cache_query_port          = 7002,
   $gr_timezone                  = 'GMT',
+  $gr_secretkey                 = 'defaultsecretkey',
 ) inherits graphite::params {
 
   anchor { 'graphite::config::begin': }
@@ -84,6 +85,13 @@ class graphite::config (
       owner   => "$gr_user",
       group   => "$gr_gid",
       content => template("graphite/opt/graphite/webapp/graphite/local_settings.py.erb"),
+      require => [Package["httpd"],Exec["Initial django db creation"]];
+
+    "/opt/graphite/webapp/graphite/app_settings.py":  ## Even though the file says not to mod it directly, we have to because of Django v1.4
+      mode    => 0644,
+      owner   => "$gr_user",
+      group   => "$gr_gid",
+      content => template("graphite/opt/graphite/webapp/graphite/app_settings.py.erb"),
       require => [Package["httpd"],Exec["Initial django db creation"]];
 
     "/etc/httpd/conf.d/graphite.conf":
