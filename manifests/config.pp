@@ -60,6 +60,13 @@ class graphite::config (
       owner  => "$gr_user",
       group  => "$gr_gid";
 
+    "/data/graphite/storage/graphite.db":
+      ensure  => directory,
+      mode    => 0644,
+      owner   => "$gr_user",
+      group   => "$gr_gid",
+      require => Exec['Initial django db creation'];
+
     "/data/graphite/storage/log":
       ensure  => directory,
       recurse => true,
