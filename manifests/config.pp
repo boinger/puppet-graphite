@@ -65,7 +65,7 @@ class graphite::config (
 
     "/data/graphite/storage":
       ensure => directory,
-      mode   => 0755,
+      mode   => 0775,
       owner  => "$gr_user",
       group  => "$gr_gid";
 
