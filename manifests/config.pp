@@ -28,12 +28,21 @@ class graphite::config (
     require => Package["httpd"],
   }
 
-  service { "httpd":
+  service {
+    "httpd":
       hasrestart => true,
       hasstatus  => true,
       ensure     => running,
       enable     => true,
       require    => File['/data/graphite/storage/'];
+
+   "carbon-cache":
+      hasstatus  => true,
+      hasrestart => true,
+      ensure     => running,
+      enable     => true,
+      before     => Anchor['graphite::config::end'],
+      require    => File["/etc/init.d/carbon-cache"];
   }
 
   # first init of user db for graphite
@@ -159,12 +168,4 @@ class graphite::config (
       require => File["/opt/graphite/bin/carbon-logrotate.sh"];
   }
 
-  service { "carbon-cache":
-      hasstatus  => true,
-      hasrestart => true,
-      ensure     => running,
-      enable     => true,
-      before     => Anchor['graphite::config::end'],
-      require    => File["/etc/init.d/carbon-cache"];
-  }
 }
