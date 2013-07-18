@@ -71,7 +71,8 @@ class graphite::config (
       recurse => true,
       mode    => 0775,
       owner   => "$gr_user",
-      group   => "$gr_gid";
+      group   => "$gr_gid",
+      require => Service['httpd'];
 
     "/opt/graphite":
       ensure => directory,
