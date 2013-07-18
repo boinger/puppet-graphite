@@ -69,6 +69,12 @@ class graphite::config (
       owner  => "$gr_user",
       group  => "$gr_gid";
 
+    "/data/graphite/storage/whisper":
+      ensure => directory,
+      mode   => 0775,
+      owner  => "$gr_user",
+      group  => "$gr_gid";
+
     "/data/graphite/storage/graphite.db":
       mode    => 0664,
       owner   => "$gr_user",
