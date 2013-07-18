@@ -73,7 +73,8 @@ class graphite::config (
       ensure => directory,
       mode   => 0775,
       owner  => "$gr_user",
-      group  => "$gr_gid";
+      group  => "$gr_gid",
+      before => Service['carbon-cache'];
 
     "/data/graphite/storage/graphite.db":
       mode    => 0664,
