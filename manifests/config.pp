@@ -51,7 +51,11 @@ class graphite::config (
       command => "python manage.py syncdb --noinput",
       cwd     => "/opt/graphite/webapp/graphite",
       creates => "/data/graphite/storage/graphite.db",
-      require => [Package['carbon'],Package['graphite-web']];
+      require => [
+        Package['carbon'],
+        Package['graphite-web'],
+        File['/opt/graphite/webapp/graphite/local_settings.py'],
+        ];
   }
 
   # Deploy configfiles
@@ -108,7 +112,7 @@ class graphite::config (
       owner   => "$gr_user",
       group   => "$gr_gid",
       content => template("graphite/opt/graphite/webapp/graphite/local_settings.py.erb"),
-      require => [Package["httpd"],Exec["Initial django db creation"]];
+      require => Package["httpd"];
 
     "/opt/graphite/webapp/graphite/app_settings.py":  ## Even though the file says not to mod it directly, we have to because of Django v1.4
       mode    => 0644,
