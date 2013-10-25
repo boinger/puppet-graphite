@@ -152,6 +152,11 @@ class graphite::config (
       require => Package["graphite-web"],
       notify  => Service["carbon-cache"];
 
+    "/opt/graphite/conf/storage-aggregation.conf":
+      mode    => 644,
+      content => template("graphite/opt/graphite/conf/storage-aggregation.conf.erb"),
+      require => Package["graphite-web"]; ## No notify needed -- this file is monitored for changes
+
     "/opt/graphite/conf/carbon.conf":
       mode    => 644,
       content => template("graphite/opt/graphite/conf/carbon.conf.erb"),
