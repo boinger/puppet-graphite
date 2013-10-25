@@ -122,7 +122,7 @@ class graphite::config (
       require => [Package["httpd"],Exec["Initial django db creation"]];
 
     "/etc/httpd/conf.d/graphite.conf":
-      mode    => 644,
+      mode    => 0644,
       owner   => "$web_user",
       group   => "$web_gid",
       content => template("graphite/etc/apache2/sites-available/graphite.conf.erb"),
@@ -132,13 +132,13 @@ class graphite::config (
 
     "/opt/graphite/conf":
       recurse => true,
-      mode    => 644,
+      mode    => 0644,
       owner   => "$gr_user",
       group   => "$gr_gid",
       source  => "puppet:///modules/graphite/opt/graphite/conf";
 
     "/opt/graphite/conf/graphite.wsgi":
-      mode    => 644,
+      mode    => 0644,
       owner   => "$gr_user",
       group   => "$gr_gid",
       content => template("graphite/opt/graphite/conf/graphite.wsgi.erb"),
@@ -147,31 +147,35 @@ class graphite::config (
 
   # configure carbon engine
     "/opt/graphite/conf/storage-schemas.conf":
-      mode    => 644,
+      mode    => 0644,
+      owner   => "$gr_user",
+      group   => "$gr_gid",
       content => template("graphite/opt/graphite/conf/storage-schemas.conf.erb"),
       require => Package["graphite-web"],
       notify  => Service["carbon-cache"];
 
     "/opt/graphite/conf/storage-aggregation.conf":
-      mode    => 644,
+      mode    => 0644,
+      owner   => "$gr_user",
+      group   => "$gr_gid",
       content => template("graphite/opt/graphite/conf/storage-aggregation.conf.erb"),
       require => Package["graphite-web"]; ## No notify needed -- this file is monitored for changes
 
     "/opt/graphite/conf/carbon.conf":
-      mode    => 644,
+      mode    => 0644,
       content => template("graphite/opt/graphite/conf/carbon.conf.erb"),
       require => Package["graphite-web"],
       notify  => Service["carbon-cache"];
 
     "/etc/init.d/carbon-cache":
       ensure  => present,
-      mode    => 750,
+      mode    => 0750,
       content => template("graphite/etc/init.d/carbon-cache.erb"),
       require => File["/opt/graphite/conf/carbon.conf"];
 
   # configure logrotate script for carbon
     "/opt/graphite/bin/carbon-logrotate.sh":
-      mode    => 544,
+      mode    => 0544,
       content => template("graphite/opt/graphite/bin/carbon-logrotate.sh.erb"),
       require => Package["graphite-web"];
   }
