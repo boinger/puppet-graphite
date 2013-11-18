@@ -20,3 +20,7 @@
 pattern = .*
 retentions = 10s:24h,60s:2d,300s:730d
 #retentions = 10s:1h
+
+[watchertxntimer]
+pattern = stats.timers.service.watcher.transaction.*
+retentions = 5m:7d,1d:4w,1w:730d
