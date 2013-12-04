@@ -86,7 +86,10 @@ class graphite::config (
       group   => "$gr_gid",
       require => Exec['Initial django db creation'];
 
-    "/data/graphite/storage/log":
+    [
+    "/data/graphite/storage/log",
+    "/data/graphite/storage/log/webapp"
+    ]:
       ensure  => directory,
       recurse => true,
       mode    => 0775,
