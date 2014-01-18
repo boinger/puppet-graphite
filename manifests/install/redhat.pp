@@ -1,7 +1,18 @@
-# Works for Redhat 6+ and CentOS 6+
+# Works for Redhat 6.4+, Scientific 6.4+, and CentOS 6.4+
 
 class graphite::install::redhat {
 
+	package {
+		[
+		"graphite-web",
+		"python-carbon",
+		"python-whisper",
+		]:
+			ensure => latest;
+	}
+
+	/*
+# Works for Redhat 6.x, Scientific 6.x, and CentOS 6.x
 	require graphite::params
 
 	Exec {path => '/bin:/usr/bin:/usr/sbin', }
@@ -88,5 +99,6 @@ class graphite::install::redhat {
 			refreshonly => true,
 			require     => [Exec["Download and untar $whisperVersion"],Exec["Install twisted"]];
 	}
+	*/
 	
 }
