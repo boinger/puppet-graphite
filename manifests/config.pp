@@ -54,7 +54,7 @@ class graphite::config (
       require => [
         Package['python-carbon'],
         Package['graphite-web'],
-        File['/opt/graphite/webapp/graphite/local_settings.py'],
+        File['/etc/graphite-web/local_settings.py'],
         ];
   }
 
@@ -118,7 +118,7 @@ class graphite::config (
       require => Package["httpd"];
 
     /*
-    "/opt/graphite-web/app_settings.py":  ## Even though the file says not to mod it directly, we have to because of Django v1.4
+    "/etc/graphite-web/app_settings.py":  ## Even though the file says not to mod it directly, we have to because of Django v1.4
       mode    => 0644,
       owner   => "$gr_user",
       group   => "$gr_gid",
