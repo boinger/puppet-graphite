@@ -52,7 +52,7 @@ class graphite::config (
       cwd     => "/opt/graphite/webapp/graphite",
       creates => "/data/graphite/storage/graphite.db",
       require => [
-        Package['carbon'],
+        Package['python-carbon'],
         Package['graphite-web'],
         File['/opt/graphite/webapp/graphite/local_settings.py'],
         ];
