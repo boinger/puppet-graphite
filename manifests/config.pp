@@ -182,6 +182,12 @@ class graphite::config (
       content => template("graphite/etc/init.d/carbon-cache.erb"),
       require => File["/opt/graphite/conf/carbon.conf"];
 
+  # search index builder
+    "/opt/graphite/bin/build-index.sh":
+      mode    => 0544,
+      content => template("graphite/opt/graphite/bin/build-index.sh.erb"),
+      require => Package["graphite-web"];
+
   # configure logrotate script for carbon
     "/opt/graphite/bin/carbon-logrotate.sh":
       mode    => 0544,
@@ -189,7 +195,15 @@ class graphite::config (
       require => Package["graphite-web"];
   }
 
-  cron { "Rotate carbon logs":
+  cron {
+    "Rebuild graphite index":
+      command => "/opt/graphite/bin/build-index.sh",
+      user    => root,
+      hour    => '4',
+      minute  => '44',
+      require => File["/opt/graphite/bin/build-index.sh"];
+
+    "Rotate carbon logs":
       command => "/opt/graphite/bin/carbon-logrotate.sh",
       user    => root,
       hour    => '1',
