@@ -11,21 +11,21 @@ WSGISocketPrefix run/wsgi
 	ErrorLog /data/log/graphite/error.log        
 	CustomLog /data/log/graphite/access.log common        
 
-	WSGIDaemonProcess graphite processes=5 threads=5 display-name='%{GROUP}' inactivity-timeout=120
+	WSGIDaemonProcess graphite processes=5 threads=10 display-name='%{GROUP}' inactivity-timeout=120
 	WSGIProcessGroup graphite
 	WSGIApplicationGroup %{GLOBAL}
 	WSGIImportScript /opt/graphite/conf/graphite.wsgi process-group=graphite application-group=%{GLOBAL}
 
 	WSGIScriptAlias / /opt/graphite/conf/graphite.wsgi 
 
-	<Location "/">                
-		SetHandler python-program
-		PythonPath "['/opt/graphite/webapp'] + sys.path"
-		PythonHandler django.core.handlers.modpython
-		SetEnv DJANGO_SETTINGS_MODULE graphite.settings
-		PythonDebug Off
-		PythonAutoReload Off
-	</Location>
+	#<Location "/">                
+	#	SetHandler python-program
+	#	PythonPath "['/opt/graphite/webapp'] + sys.path"
+	#	PythonHandler django.core.handlers.modpython
+	#	SetEnv DJANGO_SETTINGS_MODULE graphite.settings
+	#	PythonDebug Off
+	#	PythonAutoReload Off
+	#</Location>
 
 	Alias /content/ /opt/graphite/webapp/content/
 	<Location "/content/">
@@ -36,5 +36,10 @@ WSGISocketPrefix run/wsgi
 	<Location "/media/">
 		SetHandler None
 	</Location>
+
+  <Directory /opt/graphite/conf/>
+          Order deny,allow
+          Allow from all
+  </Directory>
 	
 </VirtualHost>
