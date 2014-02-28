@@ -36,7 +36,7 @@ LOCAL_DATA_DIR = /data/graphite/storage/whisper/
 # Specify the user to drop privileges to
 # If this is blank carbon runs as the user that invokes it
 # This user must have write access to the local data directory
-USER = <%= gr_user %>
+USER = <%= @gr_user %>
 
 # Limit the size of the cache to avoid swapping or becoming CPU bound.
 # Sorts and serving cache queries gets more expensive as the cache grows.
@@ -48,7 +48,7 @@ MAX_CACHE_SIZE = <%= gr_max_cache_size %>
 # prevent over-utilizing the disk and thus starving the rest of the system.
 # When the rate of required updates exceeds this, then carbon's caching will
 # take effect and increase the overall throughput accordingly.
-MAX_UPDATES_PER_SECOND = <%= gr_max_updates_per_second %>
+MAX_UPDATES_PER_SECOND = <%= @gr_max_updates_per_second %>
 
 # Softly limits the number of whisper files that get created each minute.
 # Setting this value low (like at 50) is a good way to ensure your graphite
@@ -59,26 +59,26 @@ MAX_UPDATES_PER_SECOND = <%= gr_max_updates_per_second %>
 # the files quickly but at the risk of slowing I/O down considerably for a while.
 MAX_CREATES_PER_MINUTE = <%= gr_max_creates_per_minute %>
 
-LINE_RECEIVER_INTERFACE = <%= gr_line_receiver_interface %>
-LINE_RECEIVER_PORT = <%= gr_line_receiver_port %>
+LINE_RECEIVER_INTERFACE = <%= @gr_line_receiver_interface %>
+LINE_RECEIVER_PORT = <%= @gr_line_receiver_port %>
 
 # Set this to True to enable the UDP listener. By default this is off
 # because it is very common to run multiple carbon daemons and managing
 # another (rarely used) port for every carbon instance is not fun.
-ENABLE_UDP_LISTENER = <%= gr_enable_udp_listener %>
-UDP_RECEIVER_INTERFACE = <%= gr_udp_receiver_interface %>
-UDP_RECEIVER_PORT = <%= gr_udp_receiver_port %>
+ENABLE_UDP_LISTENER = <%= @gr_enable_udp_listener %>
+UDP_RECEIVER_INTERFACE = <%= @gr_udp_receiver_interface %>
+UDP_RECEIVER_PORT = <%= @gr_udp_receiver_port %>
 
-PICKLE_RECEIVER_INTERFACE = <%= gr_pickle_receiver_interface %>
-PICKLE_RECEIVER_PORT = <%= gr_pickle_receiver_port %>
+PICKLE_RECEIVER_INTERFACE = <%= @gr_pickle_receiver_interface %>
+PICKLE_RECEIVER_PORT = <%= @gr_pickle_receiver_port %>
 
 # Per security concerns outlined in Bug #817247 the pickle receiver
 # will use a more secure and slightly less efficient unpickler.
 # Set this to True to revert to the old-fashioned insecure unpickler.
 USE_INSECURE_UNPICKLER = <%= gr_use_insecure_unpickler %>
 
-CACHE_QUERY_INTERFACE = <%= gr_cache_query_interface %>
-CACHE_QUERY_PORT = <%= gr_cache_query_port %>
+CACHE_QUERY_INTERFACE = <%= @gr_cache_query_interface %>
+CACHE_QUERY_PORT = <%= @gr_cache_query_port %>
 
 # Set this to False to drop datapoints received after the cache
 # reaches MAX_CACHE_SIZE. If this is True (the default) then sockets
