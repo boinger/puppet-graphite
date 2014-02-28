@@ -117,14 +117,18 @@ class graphite::config (
       content => template("graphite/opt/graphite/webapp/graphite/local_settings.py.erb"),
       require => Package["httpd"];
 
-    /*
+    "/usr/lib/python2.6/site-packages/graphite/local_settings.py":
+      ensure => "/etc/graphite-web/local_settings.py";
+
     "/etc/graphite-web/app_settings.py":  ## Even though the file says not to mod it directly, we have to because of Django v1.4
       mode    => 0644,
       owner   => "$gr_user",
       group   => "$gr_gid",
       content => template("graphite/opt/graphite/webapp/graphite/app_settings.py.erb"),
       require => [Package["httpd"],Exec["Initial django db creation"]];
-    */
+
+    "/usr/lib/python2.6/site-packages/graphite/app_settings.py":
+      ensure => "/etc/graphite-web/app_settings.py";
 
     "/etc/httpd/conf.d/graphite.conf":
       mode    => 0644,
