@@ -5,7 +5,7 @@
 WSGISocketPrefix run/wsgi
 
 <VirtualHost *:80>
-	ServerName <%= fqdn %>
+	ServerName <%= @fqdn %>
 	DocumentRoot "/opt/graphite/webapp"        
 
 	ErrorLog /data/log/graphite/error.log        

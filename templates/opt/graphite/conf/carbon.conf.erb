@@ -41,7 +41,7 @@ USER = <%= @gr_user %>
 # Limit the size of the cache to avoid swapping or becoming CPU bound.
 # Sorts and serving cache queries gets more expensive as the cache grows.
 # Use the value "inf" (infinity) for an unlimited cache size.
-MAX_CACHE_SIZE = <%= gr_max_cache_size %>
+MAX_CACHE_SIZE = <%= @gr_max_cache_size %>
 
 # Limits the number of whisper update_many() calls per second, which effectively
 # means the number of write requests sent to the disk. This is intended to
@@ -57,7 +57,7 @@ MAX_UPDATES_PER_SECOND = <%= @gr_max_updates_per_second %>
 # database files to all get created and thus longer until the data becomes usable.
 # Setting this value high (like "inf" for infinity) will cause graphite to create
 # the files quickly but at the risk of slowing I/O down considerably for a while.
-MAX_CREATES_PER_MINUTE = <%= gr_max_creates_per_minute %>
+MAX_CREATES_PER_MINUTE = <%= @gr_max_creates_per_minute %>
 
 LINE_RECEIVER_INTERFACE = <%= @gr_line_receiver_interface %>
 LINE_RECEIVER_PORT = <%= @gr_line_receiver_port %>
@@ -75,7 +75,7 @@ PICKLE_RECEIVER_PORT = <%= @gr_pickle_receiver_port %>
 # Per security concerns outlined in Bug #817247 the pickle receiver
 # will use a more secure and slightly less efficient unpickler.
 # Set this to True to revert to the old-fashioned insecure unpickler.
-USE_INSECURE_UNPICKLER = <%= gr_use_insecure_unpickler %>
+USE_INSECURE_UNPICKLER = <%= @gr_use_insecure_unpickler %>
 
 CACHE_QUERY_INTERFACE = <%= @gr_cache_query_interface %>
 CACHE_QUERY_PORT = <%= @gr_cache_query_port %>
