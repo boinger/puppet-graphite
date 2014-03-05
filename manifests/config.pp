@@ -190,7 +190,7 @@ class graphite::config (
 
   # configure logrotate script for carbon
     "/opt/graphite/bin/carbon-logrotate.sh":
-      mode    => 0544,
+      mode    => 0755,
       content => template("graphite/opt/graphite/bin/carbon-logrotate.sh.erb"),
       require => Package["graphite-web"];
   }
