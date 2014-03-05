@@ -184,7 +184,7 @@ class graphite::config (
 
   # search index builder
     "/opt/graphite/bin/build-index.sh":
-      mode    => 0544,
+      mode    => 0755,
       content => template("graphite/opt/graphite/bin/build-index.sh.erb"),
       require => Package["graphite-web"];
 
