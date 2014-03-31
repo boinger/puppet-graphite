@@ -110,6 +110,10 @@ class graphite::config (
           File['/data/graphite/storage'],
         ];
 
+    "/opt/graphite/webapp":
+      ensure  => '/usr/share/graphite/webapp',
+      require => File['/opt/graphite'];
+
     "/etc/graphite-web/local_settings.py":
       mode    => 644,
       owner   => "$gr_user",
