@@ -49,7 +49,7 @@ class graphite::config (
   exec {
     "Initial django db creation":
       command => "python manage.py syncdb --noinput",
-      cwd     => "/opt/graphite/webapp/graphite",
+      cwd     => "/usr/lib/python2.6/site-packages/graphite",
       creates => "/data/graphite/storage/graphite.db",
       require => [
         Package['python-carbon'],
