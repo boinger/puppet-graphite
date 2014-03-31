@@ -186,6 +186,10 @@ class graphite::config (
       content => template("graphite/etc/init.d/carbon-cache.erb"),
       require => File["/opt/graphite/conf/carbon.conf"];
 
+    "/opt/graphite/bin":
+      ensure  => directory,
+      mode    => 0755;
+
   # search index builder
     "/opt/graphite/bin/build-index.sh":
       mode    => 0755,
