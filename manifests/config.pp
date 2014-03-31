@@ -16,6 +16,7 @@ class graphite::config (
   $gr_cache_query_port          = 7002,
   $gr_timezone                  = 'GMT',
   $gr_secretkey                 = 'defaultsecretkey',
+  $gr_default_retentions        = '30s:24h,60s:2d,300s:60d,600s:500d',
 ) inherits graphite::params {
 
   anchor { 'graphite::config::begin': }
