@@ -27,6 +27,11 @@ WSGISocketPrefix run/wsgi
 	#	PythonAutoReload Off
 	#</Location>
 
+    Header set Access-Control-Allow-Origin "*"
+    Header set Access-Control-Allow-Methods "GET, OPTIONS"
+    Header set Access-Control-Allow-Headers "origin, authorization, accept"
+    Header set Access-Control-Allow-Credentials true
+
 	Alias /content/ /opt/graphite/webapp/content/
 	<Location "/content/">
 		SetHandler None
