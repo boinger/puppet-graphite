@@ -19,6 +19,10 @@ retentions = 1m:1h
 pattern = .*\.timers\.service\.watcher\.transaction\..*
 retentions = 5m:7d,1h:30d,1d:2y
 
+[rabbitmq tmp queue garbage]
+pattern = stats\.rabbitmq\.queue.*
+retentions = 600s:100d
+
 [default]
 pattern = .*
 retentions = <%= @gr_default_retentions %>
