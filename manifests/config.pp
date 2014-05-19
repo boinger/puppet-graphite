@@ -206,7 +206,7 @@ class graphite::config (
 
   cron {
     "Rebuild graphite index":
-      command => "/opt/graphite/bin/build-index.sh",
+      command => "/opt/graphite/bin/build-index.sh 2>&1 >/dev/null",
       user    => root,
       hour    => '4',
       minute  => '44',
