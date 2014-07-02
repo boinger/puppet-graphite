@@ -11,7 +11,7 @@ WSGISocketPrefix run/wsgi
 	ErrorLog /data/log/graphite/error.log        
 	CustomLog /data/log/graphite/access.log common        
 
-	WSGIDaemonProcess graphite processes=5 threads=5 display-name='%{GROUP}' inactivity-timeout=120
+	WSGIDaemonProcess graphite processes=3 threads=3 display-name='%{GROUP}' inactivity-timeout=120
 	WSGIProcessGroup graphite
 	WSGIApplicationGroup %{GLOBAL}
 	WSGIImportScript /opt/graphite/conf/graphite.wsgi process-group=graphite application-group=%{GLOBAL}
