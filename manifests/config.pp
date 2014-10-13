@@ -213,7 +213,8 @@ class graphite::config (
       require => File["/opt/graphite/bin/build-index.sh"];
 
     # XXX has a hard coded path that is bad. I don't see log files piling up, so I'm removing this for now
-    # "Rotate carbon logs":
+    "Rotate carbon logs":
+      ensure => absent;
     #   command => "/opt/graphite/bin/carbon-logrotate.sh",
     #   user    => root,
     #   hour    => '1',
